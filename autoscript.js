@@ -20,9 +20,10 @@ function AutoPXLS(images){
 		function isSamePixelColor(coords){
 			var board_pixel = board.getImageData((parseInt(x) + parseInt(coords["x"])), (parseInt(y) + parseInt(coords["y"])), 1, 1).data;
 			var image_pixel = getNearestColor(image.getImageData(coords["x"], coords["y"], 1, 1).data);
+			console.log(" color on x: %i y : %i, skip",(parseInt(x) + parseInt(coords["x"])),(parseInt(y) + parseInt(coords["y"])));
+			
 	console.log(board_pixel + "et" + image_pixel)
 			//if(image_pixel[3] <= 127) return true;
-
 			for(var i = 0; i < 3; i++){
 				if(board_pixel[i] != image_pixel[i]) return false;
 			}
