@@ -1,5 +1,5 @@
 var script = document.createElement('script');
-script.src = "https://rawgit.com/jbatea/Road_to_victory/master/autoscript.js";
+script.src = "https://rawgit.com/rbohmert/colorspace/master/autoscript.js";
 script.onload = function () {
     var images = [
         {
