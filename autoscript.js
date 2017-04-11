@@ -15,7 +15,7 @@ function AutoPXLS(images){
 		var image;
 
 		var image_loaded_flag = false;
-
+		
 
 		function isSamePixelColor(coords){
 			var board_pixel = board.getImageData((parseInt(x) + parseInt(coords["x"])), (parseInt(y) + parseInt(coords["y"])), 1, 1).data;
@@ -66,7 +66,7 @@ function AutoPXLS(images){
 						tmp_dif = dif;
 					}
 				}
-				return (color_id);
+				return (colors[color_id]);
 		}
 
 		function getColorId(coords){
