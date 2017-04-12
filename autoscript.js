@@ -1,76 +1,20 @@
-function ChanclaTyper(X,Y,imge){
-    //console.log("script loaded");
-	
-	var startX = X;
-	var startY = Y;
-	
-	var image = new Image(); // or document.createElement('img'); 
-	var arrzy
-	image.onload = function(){
-		console.log("AYAAAA INITIALIZING");
+function AutoPXLS(images){
+
+	var Painter = function(config){
+		var board = document.getElementById("canvas").getContext('2d');
+		var title = config.title || "unnamed";
+
+		var img = new Image();
+		img.crossOrigin = "anonymous";
+		img.src = config.image;
+		var x = config.x;
+		var y = config.y;
+
 		var canvas = document.createElement('canvas');
-		var ctx = canvas.getContext("2d");
-		canvas.width = image.width;
-		canvas.height = image.height;
-		//alert(canvas.width +","+canvas.height);
-		ctx.drawImage(image, 0, 0, image.width, image.height);
-		
-		var imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);	
-		var i;
-		var temparray = [];
-		for (i = 0; i < imgData.data.length; i += 4) {
-			imgData.data[i] = imgData.data[i];
-			imgData.data[i+1] = imgData.data[i+1];
-			imgData.data[i+2] = imgData.data[i+2];
-			imgData.data[i+3] = 255;
-			
-			temparray.push(RGBAtoPixel(imgData.data));
-		}
-		
-		// Tableau
-		// height(lignes) puis width(colonnes)
+		var image;
 
-		var appVar = [];
-		var tempvar = [];
-		var count = 0;
-		for (l = 0; l < canvas.height ; l++)
-		{
-			tempvar = [];
-			for (c = 0 ; c < canvas.width ; c++)
-			{
-				tempvar.push(temparray[count]);
-				count++;
-			}
-			appVar.push(tempvar);
-		}
-		
-		var script = document.createElement('script');
-		script.src = "https://rawgit.com/Jarts37/ColorBotYatangaki/master/ColorWriter.js";
-		script.onload = function () {
-			ColorWriter(appVar,startX,startY);
-		};
-		document.head.appendChild(script);
-		
-		// TEST TABLEAU
-		/*
-		var arr =appVar,arrText='';
-
-				for (var i = 0; i < arr.length; i++) {
-					for (var j = 0; j < arr[i].length; j++) {
-						arrText+=arr[i][j]+' ';
-					}
-					console.log(arrText);
-					arrText='';
-				}
-		*/
-		
-	}
-	image.crossOrigin = 'Anonymous';
-	image.src = imge;
-	
-	function RGBAtoPixel(pixel){	
-			
-			var colors = [
+		var image_loaded_flag = false;
+		var colors = [
 				[255,255,255],
 				[228,228,228],
 				[136,136,136],
@@ -88,6 +32,20 @@ function ChanclaTyper(X,Y,imge){
 				[207,110,228],
 				[130,0,128]
 			];
+		
+		function isSamePixelColor(coords){
+			var color_id = getNearestColor(image.getImageData(coords["x"], coords["y"], 1, 1).data);
+			var board_pixel = board.getImageData(parseInt(x) + parseInt(coords["x"]), parseInt(y) + parseInt(coords["y"]), 1, 1).data;
+			
+			console.log("board: " + board_pixel);
+			for(var i = 0; i < 3; i++){
+				if(board_pixel[i] != colors[color_id][i]) return false;
+			}
+			console.log("Pixel is already ok, play on new coords");
+			return true;
+		}
+
+		function getNearestColor(pixel){
 				var tmp_dif = 755;
 				var color_id = 0;
 				for(var i = 0; i < colors.length; i++)
@@ -108,4 +66,103 @@ function ChanclaTyper(X,Y,imge){
 				}
 				return (color_id);
 		}
+
+		function getColorId(coords){
+			var pixel = image.getImageData(coords["x"], coords["y"], 1, 1).data;
+			var color_id = -1;
+			var flag = false;
+			for(var i = 0; i < colors.length; i++){
+				flag = true;
+				for(var j = 0; j < 3; j++){
+					if(pixel[j] != colors[i][j]){
+						flag = false;
+						break;
+					}
+				}
+				if(flag){
+					color_id = i;
+					break;
+				}
+			}
+			if (color_id === -1){
+				color_id = getNearestColor(pixel);
+			}
+			return color_id;
+	}
+
+		function pictureIsDone(){
+			for(var _x = 0; _x < canvas.width; _x++){
+				for(var _y = 0; _y < canvas.height; _y++) {
+					var coords = {x: _x, y: _y};
+					if(!isSamePixelColor(coords))
+						return 0;
+				}
+			}
+			return 1;
+		}
+		function tryToDraw(){
+			while (!pictureIsDone())
+			{
+				var coords = {x: Math.floor(Math.random() * canvas.width), y: Math.floor(Math.random() * canvas.height)};
+				if(isSamePixelColor(coords)){
+					console.log("same color on x: %i y : %i, skip",(parseInt(x) + parseInt(coords["x"])),(parseInt(y) + parseInt(coords["y"])));
+				}
+				else{
+					console.log("drawing " + title + " coords " + " x:" + (parseInt(x) + parseInt(coords["x"])) + " y:" + (parseInt(y) + parseInt(coords["y"])));
+					tryColorPixel(parseInt(parseInt(x) + parseInt(coords["x"])), (parseInt(y) + parseInt(coords["y"])), getColorId(coords)); //colorthis.space
+					return 1;
+				}
+			}
+			console.log(title + " is correct");
+			return -1;
+		}
+
+		function drawImage(){
+			if(image_loaded_flag){
+				return tryToDraw();
+			}
+			return -1;
+		}
+
+		function isReady(){
+			return image_loaded_flag;
+		}
+
+		img.onload = function(){
+			canvas.width = img.width;
+			canvas.height = img.height;
+			image = canvas.getContext('2d');
+			image.drawImage(img, 0, 0, img.width, img.height);
+
+			image_loaded_flag = true;
+		};
+
+
+
+		return {
+drawImage: drawImage,
+		   isReady: isReady
+		}
+	};
+
+
+	var painters = [];
+	for(var i = 0; i < images.length; i++){
+		painters[i] = Painter(images[i]);
+	}
+
+	function draw(){
+			for(var i = 0; i < painters.length; i++){
+				if(painters[i].isReady()){
+					var result = painters[i].drawImage();
+					if(result > 0){
+						setTimeout(draw, 5000);
+						return;
+					}
+				}
+			}
+			setTimeout(draw, 1000);
+		return;
+	}
+	draw();
 }
