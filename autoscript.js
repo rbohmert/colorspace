@@ -146,7 +146,7 @@ drawImage: drawImage,
 				if(painters[i].isReady()){
 					var result = painters[i].drawImage();
 					if(result > 0){
-						setTimeout(draw, 5000);
+						setTimeout(draw, 0);
 						return;
 					}
 				}
