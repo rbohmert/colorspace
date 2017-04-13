@@ -90,18 +90,8 @@ function AutoPXLS(images){
 			return color_id;
 	}
 
-		function pictureIsDone(){
-			for(var _x = 0; _x < canvas.width; _x++){
-				for(var _y = 0; _y < canvas.height; _y++) {
-					var coords = {x: _x, y: _y};
-					if(!isSamePixelColor(coords))
-						return 0;
-				}
-			}
-			return 1;
-		}
 		function tryToDraw(){
-			while (!pictureIsDone())
+			while (1)
 			{
 				var coords = {x: Math.floor(Math.random() * canvas.width), y: Math.floor(Math.random() * canvas.height)};
 				if(isSamePixelColor(coords)){
