@@ -37,11 +37,11 @@ function AutoPXLS(images){
 			var color_id = getNearestColor(image.getImageData(coords["x"], coords["y"], 1, 1).data);
 			var board_pixel = ctx.getImageData(parseInt(x) + parseInt(coords["x"]), parseInt(y) + parseInt(coords["y"]), 1, 1).data;
 			
-			console.log("board: " + board_pixel);
+			//console.log("board: " + board_pixel);
 			for(var i = 0; i < 3; i++){
 				if(board_pixel[i] != colors[color_id][i]) return false;
 			}
-			console.log("Pixel is already ok, play on new coords");
+			//console.log("Pixel is already ok, play on new coords");
 			return true;
 		}
 
