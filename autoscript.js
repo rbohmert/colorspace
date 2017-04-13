@@ -10,7 +10,7 @@ function AutoPXLS(images){
 		var x = config.x;
 		var y = config.y;
 
-		var canvas = document.getElementById("canvas");
+		var canvas = document.createElement('canvas');
 		var image;
 
 		var image_loaded_flag = false;
@@ -35,7 +35,7 @@ function AutoPXLS(images){
 		
 		function isSamePixelColor(coords){
 			var color_id = getNearestColor(image.getImageData(coords["x"], coords["y"], 1, 1).data);
-			var board_pixel = board.getImageData(parseInt(x) + parseInt(coords["x"]), parseInt(y) + parseInt(coords["y"]), 1, 1).data;
+			var board_pixel = ctx.getImageData(parseInt(x) + parseInt(coords["x"]), parseInt(y) + parseInt(coords["y"]), 1, 1).data;
 			
 			console.log("board: " + board_pixel);
 			for(var i = 0; i < 3; i++){
