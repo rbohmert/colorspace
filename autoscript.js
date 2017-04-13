@@ -10,7 +10,7 @@ function AutoPXLS(images){
 		var x = config.x;
 		var y = config.y;
 
-		var canvas = document.createElement('canvas');
+		//var canvas = document.createElement('canvas');
 		var image;
 
 		var image_loaded_flag = false;
